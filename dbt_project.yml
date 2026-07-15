@@ -47,3 +47,5 @@ models:
       +unique_key: _source_file
     staging:
       +materialized: view
+    silver:
+      +schema: Silver_23615
