@@ -1,0 +1,21 @@
+SELECT
+    {{ dbt_utils.generate_surrogate_key(['employee_id']) }} AS employee_key,
+    employee_id,
+    full_name,
+    role,
+    work_location,
+    DATEDIFF(year, hire_date, CURRENT_DATE()) AS tenure_years,
+    email,
+    phone,
+    performance_rating,
+    sales_target,
+    current_sales,
+    target_achievement_percentage,
+    total_orders_processed,
+    total_sales_amount,
+    department,
+    employment_status,
+    manager_id,
+    hire_date,
+    date_of_birth
+FROM {{ ref('silver_employee') }}

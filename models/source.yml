@@ -6,12 +6,14 @@ sources:
     schema: MM_23615_CAPSTONE
 
     config:
-      freshness:
-        warn_after:
-          count: 1
-          period: day
-
-      loaded_at_field: last_modified_date
+        freshness:
+            warn_after:
+              count: 1
+              period: day
+            error_after:
+              count: 2
+              period: day
+        loaded_at_field: _loaded_at
 
     tables:
         - name: EX_CUSTOMER
@@ -26,14 +28,6 @@ sources:
     database: CT_MOKSHAGNA_MALINENI_DB
     schema: MM_23615_CAPSTONE_BRONZE_23615
 
-    config:
-      freshness:
-        warn_after:
-          count: 1
-          period: day
-
-      loaded_at_field: last_modified_date
-
     tables:
         - name: BRONZE_CUSTOMER
         - name: BRONZE_PRODUCT
@@ -42,3 +36,16 @@ sources:
         - name: BRONZE_ORDERS
         - name: BRONZE_STORES 
         - name: BRONZE_CAMPAIGN
+
+  - name: gold
+    database: CT_MOKSHAGNA_MALINENI_DB
+    schema: MM_23615_CAPSTONE_SILVER_23615
+
+    tables:
+        - name: SILVER_CUSTOMER
+        - name: SILVER_PRODUCTS
+        - name: SILVER_SUPPLIER
+        - name: SILVER_EMPLOYEE
+        - name: SILVER_ORDERS
+        - name: SILVER_STORES 
+        - name: SILVER_CAMPAIGN
