@@ -6,8 +6,8 @@ SELECT
 FROM {{ source('bronze','EX_STORE') }}
 
 {% if is_incremental() %}
-where source_file not in (
-    select distinct _source_file
-    from {{ this }}
+WHERE METADATA$FILENAME NOT IN (
+    SELECT DISTINCT _source_file
+    FROM {{ this }}
 )
 {% endif %}
