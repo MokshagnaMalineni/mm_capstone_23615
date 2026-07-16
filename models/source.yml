@@ -19,5 +19,26 @@ sources:
         - name: EX_SUPPLIER
         - name: EX_EMPLOYEE
         - name: EX_ORDERS
-        - name: EX_STORE 
+        - name: EX_STORE
         - name: EX_CAMPAIGN
+
+  - name: silver
+    database: CT_MOKSHAGNA_MALINENI_DB
+    schema: MM_23615_CAPSTONE_BRONZE_23615
+
+    config:
+      freshness:
+        warn_after:
+          count: 1
+          period: day
+
+      loaded_at_field: last_modified_date
+
+    tables:
+        - name: BRONZE_CUSTOMER
+        - name: BRONZE_PRODUCT
+        - name: BRONZE_SUPPLIER
+        - name: BRONZE_EMPLOYEE
+        - name: BRONZE_ORDERS
+        - name: BRONZE_STORES 
+        - name: BRONZE_CAMPAIGN

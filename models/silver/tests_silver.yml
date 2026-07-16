@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: silver_customer
+    columns:
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_product
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_campaign
+    columns:
+      - name: campaign_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_stores
+    columns:
+      - name: store_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_employee
+    columns:
+      - name: employee_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_orders
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+
+  - name: silver_supplier
+    columns:
+      - name: supplier_id
+        tests:
+          - unique
+          - not_null
+

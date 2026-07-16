@@ -49,3 +49,4 @@ models:
       +materialized: view
     silver:
       +schema: Silver_23615
+      +materialized: table
