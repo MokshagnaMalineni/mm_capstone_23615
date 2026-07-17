@@ -1,23 +1,51 @@
 version: 2
 
 sources:
-  - name: bronze_source
+  - name: bronze
     database: CT_MOKSHAGNA_MALINENI_DB
     schema: MM_23615_CAPSTONE
 
     config:
-      freshness:
-        warn_after:
-          count: 12
-          period: day
-
-      loaded_at_field: last_modified_date
+        freshness:
+            warn_after:
+              count: 1
+              period: day
+            error_after:
+              count: 2
+              period: day
+        loaded_at_field: _loaded_at
 
     tables:
-        - name: EXT_CUSTOMER
-        - name: EXT_PRODUCT
-        - name: EXT_SUPPLIER
-        - name: EXT_EMPLOYEE
-        - name: EXT_ORDERS
-        - name: EXT_STORE 
-        - name: EXT_CAMPAIGN
+        - name: EX_CUSTOMER
+        - name: EX_PRODUCT
+        - name: EX_SUPPLIER
+        - name: EX_EMPLOYEE
+        - name: EX_ORDERS
+        - name: EX_STORE
+        - name: EX_CAMPAIGN
+
+  - name: silver
+    database: CT_MOKSHAGNA_MALINENI_DB
+    schema: MM_23615_CAPSTONE_BRONZE_23615
+
+    tables:
+        - name: BRONZE_CUSTOMER
+        - name: BRONZE_PRODUCT
+        - name: BRONZE_SUPPLIER
+        - name: BRONZE_EMPLOYEE
+        - name: BRONZE_ORDERS
+        - name: BRONZE_STORES 
+        - name: BRONZE_CAMPAIGN
+
+  - name: gold
+    database: CT_MOKSHAGNA_MALINENI_DB
+    schema: MM_23615_CAPSTONE_SILVER_23615
+
+    tables:
+        - name: SILVER_CUSTOMER
+        - name: SILVER_PRODUCTS
+        - name: SILVER_SUPPLIER
+        - name: SILVER_EMPLOYEE
+        - name: SILVER_ORDERS
+        - name: SILVER_STORES 
+        - name: SILVER_CAMPAIGN

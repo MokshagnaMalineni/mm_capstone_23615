@@ -3,7 +3,7 @@ SELECT
     CURRENT_TIMESTAMP() AS _loaded_at,
     METADATA$FILENAME AS _source_file,
     '{{ invocation_id }}' AS _batch_id
-FROM {{ source('bronze','EX_ORDERS') }}
+FROM {{ source('bronze','EX_EMPLOYEE') }}
 
 {% if is_incremental() %}
 WHERE METADATA$FILENAME NOT IN (

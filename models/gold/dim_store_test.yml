@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: dim_store
+    description: Store Dimension table
+
+    columns:
+      - name: store_key
+        tests:
+          - unique
+          - not_null
+
+      - name: store_id
+        tests:
+          - unique
+          - not_null
+
+      - name: store_name
+        tests:
+          - not_null
+
+      - name: address
+        tests:
+          - not_null
+
+      - name: region
+        tests:
+          - not_null
+
+
+      - name: opening_date
+        tests:
+          - not_null
+
+      - name: is_active
+        tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]

@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: dim_customer
+    columns:
+      - name: customer_key
+        tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        tests:
+          - unique
+          - not_null
+
+      - name: full_name
+        tests:
+          - not_null
+
+
+
+      - name: registration_date
+        tests:
+          - not_null
+
+
+
+      - name: is_current
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+      - name: valid_from
+        tests:
+          - not_null

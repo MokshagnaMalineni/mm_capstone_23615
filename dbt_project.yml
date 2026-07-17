@@ -41,6 +41,16 @@ models:
     example:
       +materialized: table
     bronze:
+      +schema: Bronze_23615
       +materialized: incremental
+      +incremental_strategy: merge
+      +unique_key: _source_file
     staging:
       +materialized: view
+    silver:
+      +schema: "{{'Silver_23615' }}"
+      +materialized: table
+    gold:
+      +schema: "{{'Gold_23615' }}"
+      +materialized: table
+

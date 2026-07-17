@@ -1,0 +1,65 @@
+version: 2
+
+models:
+  - name: dim_product
+    description: Product Dimension table
+
+    columns:
+      - name: product_key
+        tests:
+          - unique
+          - not_null
+
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        tests:
+          - not_null
+
+      - name: category
+        tests:
+          - not_null
+
+      - name: subcategory
+        tests:
+          - not_null
+
+      - name: brand
+        tests:
+          - not_null
+
+      - name: supplier_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('silver_supplier')
+                field: supplier_id
+              config:
+                where: "supplier_id is not null"
+
+      - name: unit_price
+        tests:
+          - not_null
+
+      - name: cost_price
+        tests:
+          - not_null
+
+      - name: stock_quantity
+        tests:
+          - not_null
+
+      - name: low_stock_flag
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      - name: weight_kg
+        tests:
+          - not_null
