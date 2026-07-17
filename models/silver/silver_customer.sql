@@ -39,12 +39,12 @@ sorted_customer AS (
         CASE
             WHEN REGEXP_LIKE(LOWER(TRIM(email)),'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')
             THEN LOWER(TRIM(email))
-            ELSE NULL
+            ELSE 'INVALID'
         END AS email,
         CASE
             WHEN LENGTH(REGEXP_REPLACE(UPPER(phone),'[^0-9X]','')) = 10
             THEN REGEXP_REPLACE(UPPER(phone),'[^0-9X]','')
-            ELSE NULL
+            ELSE 'INVALID'
         END AS phone,
         COALESCE(
             TRY_TO_DATE(birth_date,'YYYY-MM-DD'),

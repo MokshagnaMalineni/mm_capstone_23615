@@ -38,7 +38,6 @@ WITH order_flattened AS (
          LATERAL FLATTEN(input => VALUE:orders_data) f,
          LATERAL FLATTEN(input => f.value:order_items) i
 ),
-
 sorted_orders AS (
     SELECT
         TRIM(order_id) AS order_id,
@@ -94,8 +93,10 @@ sorted_orders AS (
         COALESCE(unit_price,0) AS unit_price,
         COALESCE(cost_price,0) AS cost_price,
         COALESCE(item_discount_amount,0) AS item_discount_amount,
-        quantity * unit_price * (1 - item_discount_amount) AS line_revenue,
-        quantity * cost_price AS line_cost,
+        (quantity * unit_price) - COALESCE(item_discount_amount,0)
+            AS line_revenue,
+        quantity * cost_price
+            AS line_cost,
         INITCAP(TRIM(billing_street)) AS billing_street,
         INITCAP(TRIM(billing_city)) AS billing_city,
         UPPER(TRIM(billing_state)) AS billing_state,
@@ -113,17 +114,16 @@ sorted_orders AS (
 order_metrics AS (
     SELECT
         order_id,
-        COUNT(product_id) AS total_items,
+        COUNT(DISTINCT product_id) AS total_items,
         SUM(quantity) AS total_quantity,
-        SUM(quantity * unit_price) AS order_total_amount,
-        SUM(quantity * cost_price) AS order_total_cost,
+        SUM(line_revenue) AS order_total_amount,
+        SUM(line_cost) AS order_total_cost,
         SUM(item_discount_amount) AS total_discount,
         SUM(line_revenue) AS line_revenue,
         SUM(line_cost) AS line_cost
     FROM sorted_orders
     GROUP BY order_id
 )
-
 SELECT
     s.*,
     m.total_items,
@@ -131,38 +131,58 @@ SELECT
     m.order_total_amount,
     m.order_total_cost,
     m.total_discount,
-    CASE
-        WHEN EXTRACT(HOUR FROM s.order_date) >= 5  AND EXTRACT(HOUR FROM s.order_date) < 12
-        THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM s.order_date) >= 12 AND EXTRACT(HOUR FROM s.order_date) < 17
-        THEN 'Afternoon'
-        WHEN EXTRACT(HOUR FROM s.order_date) >= 17 AND EXTRACT(HOUR FROM s.order_date) < 22
-        THEN 'Evening'
-        ELSE 'Night'
-    END AS order_time_of_day,
     WEEK(s.order_date) AS order_week,
     MONTH(s.order_date) AS order_month,
     QUARTER(s.order_date) AS order_quarter,
     YEAR(s.order_date) AS order_year,
     DATEDIFF(day, s.order_date, s.shipping_date) AS processing_days,
     DATEDIFF(day, s.shipping_date, s.delivery_date) AS shipping_days,
+    DATEDIFF(day, s.order_date, s.delivery_date) AS delivery_days,
     CASE
-        WHEN s.delivery_date IS NOT NULL  AND s.delivery_date <= s.estimated_delivery_date
-        THEN 'On Time'
-        WHEN s.delivery_date IS NOT NULL AND s.delivery_date > s.estimated_delivery_date
-        THEN 'Delayed'
-        WHEN s.delivery_date IS NULL  AND CURRENT_DATE() > s.estimated_delivery_date
-        THEN 'Potentially Delayed'
+        WHEN EXTRACT(HOUR FROM s.order_date) BETWEEN 5 AND 11
+            THEN 'Morning'
+        WHEN EXTRACT(HOUR FROM s.order_date) BETWEEN 12 AND 16
+            THEN 'Afternoon'
+        WHEN EXTRACT(HOUR FROM s.order_date) BETWEEN 17 AND 21
+            THEN 'Evening'
+        ELSE 'Night'
+    END AS order_time_of_day,
+    CASE
+        WHEN s.delivery_date IS NOT NULL
+             AND s.delivery_date <= s.estimated_delivery_date
+            THEN 'On Time'
+        WHEN s.delivery_date IS NOT NULL
+             AND s.delivery_date > s.estimated_delivery_date
+            THEN 'Delayed'
+        WHEN s.delivery_date IS NULL
+             AND CURRENT_DATE() > CAST(s.estimated_delivery_date AS DATE)
+            THEN 'Potentially Delayed'
         ELSE 'In Transit'
     END AS delivery_status,
-    (m.line_revenue * (1 - s.discount_amount)) - m.line_cost- s.shipping_cost- s.tax_amount
-    AS profit_amount,
+    m.line_revenue
+        - m.line_cost
+        - s.shipping_cost
+        - s.tax_amount
+        - s.discount_amount
+        AS profit_amount,
     CASE
         WHEN m.line_revenue > 0
-        THEN((m.line_revenue * (1 - s.discount_amount)) - m.line_cost- s.shipping_cost- s.tax_amount) / m.line_revenue * 100
+        THEN ROUND(
+            (
+                m.line_revenue
+                - m.line_cost
+                - s.shipping_cost
+                - s.tax_amount
+                - s.discount_amount
+            ) / m.line_revenue * 100
+        ,2)
         ELSE NULL
     END AS profit_margin_percentage
 FROM sorted_orders s
 LEFT JOIN order_metrics m
-       ON s.order_id = m.order_id
-QUALIFY ROW_NUMBER()OVER ( PARTITION BY s.order_id, s.product_id ORDER BY s.created_at DESC) = 1
+    ON s.order_id = m.order_id
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY s.order_id, s.product_id
+    ORDER BY s.created_at DESC,
+             s._loaded_at DESC,
+             s._source_file DESC) = 1
