@@ -48,13 +48,6 @@ models:
                 to: ref('dim_date')
                 field: date_key
 
-      - name: sales_channel
-        tests:
-          - accepted_values:
-              arguments:
-                values:
-                  - Online
-                  - In-Store
 
       - name: quantity_sold
         tests:

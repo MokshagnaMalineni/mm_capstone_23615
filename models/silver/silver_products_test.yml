@@ -2,6 +2,7 @@ version: 2
 
 models:
   - name: silver_product
+
     columns:
       - name: product_id
         tests:
@@ -24,6 +25,46 @@ models:
         tests:
           - not_null
 
+      - name: product_line
+        tests:
+          - not_null
+
+      - name: product_hierarchy
+        tests:
+          - not_null
+
+      - name: color
+        tests:
+          - not_null
+
+      - name: size
+        tests:
+          - not_null
+
+      - name: dimensions
+        tests:
+          - not_null
+
+      - name: weight
+        tests:
+          - not_null
+
+      - name: short_description
+        tests:
+          - not_null
+
+      - name: product_full_description
+        tests:
+          - not_null
+
+      - name: technical_specs
+        tests:
+          - not_null
+
+      - name: warranty_period
+        tests:
+          - not_null
+
       - name: supplier_id
         tests:
           - not_null
@@ -33,6 +74,10 @@ models:
                 field: supplier_id
 
       - name: launch_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
         tests:
           - not_null
 
@@ -55,3 +100,74 @@ models:
       - name: is_featured
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+      - name: low_stock_flag
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+      - name: profit_margin_percentage
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "unit_price >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "cost_price >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "stock_quantity >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "reorder_level >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "unit_price >= cost_price"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "profit_margin_percentage >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "profit_margin_percentage <= 100"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "launch_date <= current_date()"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "last_modified_date >= launch_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(product_name)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(brand)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(category)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(subcategory)) > 0"

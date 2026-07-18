@@ -48,9 +48,9 @@ models:
     staging:
       +materialized: view
     silver:
-      +schema: "{{'Silver_23615' }}"
+      +schema: "{{ 'SILVER_23615' }}"
       +materialized: table
     gold:
-      +schema: "{{'Gold_23615' }}"
+      +schema: "{{ 'GOLD_23615' }}"
       +materialized: table
 

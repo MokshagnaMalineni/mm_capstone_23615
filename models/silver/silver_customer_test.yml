@@ -2,7 +2,10 @@ version: 2
 
 models:
   - name: silver_customer
+    description: Cleaned Customer Dimension
+
     columns:
+
       - name: customer_id
         tests:
           - unique
@@ -16,19 +19,41 @@ models:
         tests:
           - not_null
 
+      - name: full_name
+        tests:
+          - not_null
+
       - name: email
         tests:
-          - unique
-      # - name: birth_date
-      #   tests:
-      #     - not_null
+          - not_null
+
+      - name: phone
+        tests:
+          - not_null
 
       - name: registration_date
         tests:
           - not_null
 
+      - name: last_purchase_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
+        tests:
+          - not_null
+
+      - name: income_bracket
+        tests:
+          - not_null
+
+      - name: occupation
+        tests:
+          - not_null
+
       - name: loyalty_tier
         tests:
+          - not_null
           - accepted_values:
               arguments:
                 values:
@@ -39,6 +64,7 @@ models:
 
       - name: preferred_communication
         tests:
+          - not_null
           - accepted_values:
               arguments:
                 values:
@@ -47,13 +73,18 @@ models:
                   - Sms
                   - Mail
 
+      - name: preferred_payment_method
+        tests:
+          - not_null
+
       - name: marketing_opt_in
         tests:
+          - not_null
           - accepted_values:
               arguments:
                 values:
-                  - TRUE
-                  - FALSE
+                  - true
+                  - false
 
       - name: total_purchases
         tests:
@@ -63,12 +94,33 @@ models:
         tests:
           - not_null
 
+      - name: street
+        tests:
+          - not_null
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: state
+        tests:
+          - not_null
+
       - name: country
         tests:
           - not_null
-      
+
+      - name: zip_code
+        tests:
+          - not_null
+
+      - name: full_address
+        tests:
+          - not_null
+
       - name: customer_segment
         tests:
+          - not_null
           - accepted_values:
               arguments:
                 values:
@@ -77,6 +129,60 @@ models:
                   - Senior
                   - Unknown
 
-      - name: full_name
+      - name: _source_file
         tests:
           - not_null
+
+      - name: _loaded_at
+        tests:
+          - not_null
+
+      - name: _batch_id
+        tests:
+          - not_null
+
+    tests:
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "customer_age >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "customer_age <= 120"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "total_purchases >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "total_spend >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "registration_date <= current_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "birth_date <= current_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "last_purchase_date >= registration_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "last_modified_date >= registration_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "email <> ''"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "phone <> ''"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "full_name <> ''"

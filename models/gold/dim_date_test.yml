@@ -2,6 +2,8 @@ version: 2
 
 models:
   - name: dim_date
+    description: Date Dimension
+
     columns:
       - name: date_key
         tests:
@@ -16,6 +18,9 @@ models:
       - name: year
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values: [2024]
 
       - name: quarter
         tests:
