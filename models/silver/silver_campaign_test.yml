@@ -2,7 +2,10 @@ version: 2
 
 models:
   - name: silver_campaign
+    description: Cleaned campaign dimension data
+
     columns:
+
       - name: campaign_id
         tests:
           - unique
@@ -20,11 +23,23 @@ models:
         tests:
           - not_null
 
+      - name: description
+        tests:
+          - not_null
+
+      - name: target_audience
+        tests:
+          - not_null
+
       - name: start_date
         tests:
           - not_null
 
       - name: end_date
+        tests:
+          - not_null
+
+      - name: last_modified_date
         tests:
           - not_null
 
@@ -40,25 +55,61 @@ models:
         tests:
           - not_null
 
-      # - name: campaign_type
-      #   tests:
-      #     - accepted_values:
-      #         arguments:
-      #           values:
-      #             - Email
-      #             - Social Media
-      #             - Television
-      #             - Radio
-      #             - Print
-      #             - Digital
-      # - name: channel
-      #   tests:
-      #     - accepted_values:
-      #         arguments:
-      #           values:
-      #             - Email
-      #             - Facebook
-      #             - Instagram
-      #             - Website
-      #             - Television
-      #             - Radio
+      - name: roi_calculation
+        tests:
+          - not_null
+
+      - name: _source_file
+        tests:
+          - not_null
+
+      - name: _loaded_at
+        tests:
+          - not_null
+
+      - name: _batch_id
+        tests:
+          - not_null
+
+
+    tests:
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "budget >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "total_cost >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "total_revenue >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "roi_calculation >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "end_date >= start_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "budget >= total_cost"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "campaign_name <> ''"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "campaign_type <> ''"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "channel <> ''"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "target_audience <> ''"

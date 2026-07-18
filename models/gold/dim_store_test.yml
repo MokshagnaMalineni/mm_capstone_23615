@@ -23,10 +23,43 @@ models:
         tests:
           - not_null
 
+      - name: street
+        tests:
+          - not_null
+
+      - name: city
+        tests:
+          - not_null
+
+      - name: state
+        tests:
+          - not_null
+
+      - name: country
+        tests:
+          - not_null
+
+      - name: zip_code
+        tests:
+          - not_null
+
       - name: region
         tests:
           - not_null
 
+      - name: store_type
+        tests:
+          - not_null
+
+      - name: store_size_category
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Small
+                  - Medium
+                  - Large
 
       - name: opening_date
         tests:
@@ -34,6 +67,34 @@ models:
 
       - name: is_active
         tests:
+          - not_null
           - accepted_values:
               arguments:
-                values: [true, false]
+                values:
+                  - true
+                  - false
+
+    tests:
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "opening_date <= current_date()"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(store_name)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(city)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(state)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(country)) > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "length(trim(region)) > 0"

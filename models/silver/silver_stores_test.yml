@@ -2,7 +2,10 @@ version: 2
 
 models:
   - name: silver_store
+    description: Cleaned Store Data
+
     columns:
+
       - name: store_id
         tests:
           - unique
@@ -11,6 +14,17 @@ models:
       - name: store_name
         tests:
           - not_null
+
+      - name: store_type
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Retail
+                  - Outlet
+                  - Flagship
+                  - Warehouse
 
       - name: manager_id
         tests:
@@ -28,6 +42,14 @@ models:
       - name: region
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - North
+                  - South
+                  - East
+                  - West
+                  - Central
 
       - name: opening_date
         tests:
@@ -45,11 +67,24 @@ models:
         tests:
           - not_null
 
+      - name: monthly_rent
+        tests:
+          - not_null
+
       - name: size_sq_ft
         tests:
           - not_null
 
       - name: is_active
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+      - name: street
         tests:
           - not_null
 
@@ -68,3 +103,80 @@ models:
       - name: zip_code
         tests:
           - not_null
+
+      - name: store_age
+        tests:
+          - not_null
+
+      - name: store_size_category
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - Small
+                  - Medium
+                  - Large
+
+      - name: sales_target_achievement_percentage
+        tests:
+          - not_null
+
+      - name: revenue_per_sq_ft
+        tests:
+          - not_null
+
+      - name: employee_efficiency
+        tests:
+          - not_null
+
+      - name: performance_issue_flag
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+    tests:
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "employee_count >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "current_sales >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "sales_target >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "monthly_rent >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "size_sq_ft > 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "opening_date <= current_date"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "store_age >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "sales_target_achievement_percentage >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "revenue_per_sq_ft >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "employee_efficiency >= 0"

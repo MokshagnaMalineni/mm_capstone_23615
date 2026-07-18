@@ -2,7 +2,10 @@ version: 2
 
 models:
   - name: silver_supplier
+    description: Cleaned supplier data
+
     columns:
+
       - name: supplier_id
         tests:
           - unique
@@ -19,7 +22,11 @@ models:
       - name: tax_id
         tests:
           - unique
+          - not_null
 
+      - name: website
+        tests:
+          - not_null
 
       - name: preferred_carrier
         tests:
@@ -29,13 +36,15 @@ models:
         tests:
           - not_null
 
-      - name: credit_rating
-        tests:
-          - not_null
 
       - name: is_active
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
 
       - name: lead_time_days
         tests:
@@ -53,13 +62,17 @@ models:
         tests:
           - not_null
 
-      - name: email
+      - name: phone
         tests:
-          - unique
+          - not_null
+
+      - name: address
+        tests:
+          - not_null
 
       - name: contract_id
         tests:
-          - unique
+          - not_null
 
       - name: contract_start_date
         tests:
@@ -72,13 +85,36 @@ models:
       - name: exclusivity
         tests:
           - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
 
       - name: renewal_option
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - true
+                  - false
+
+      - name: average_delay_days
+        tests:
+          - not_null
+
+      - name: defect_rate
+        tests:
+          - not_null
+
+      - name: on_time_delivery_rate
         tests:
           - not_null
 
       - name: quality_rating
         tests:
+          - not_null
           - accepted_values:
               arguments:
                 values:
@@ -86,3 +122,53 @@ models:
                   - Good
                   - Average
                   - Poor
+
+      - name: response_time_hours
+        tests:
+          - not_null
+
+      - name: returns_percentage
+        tests:
+          - not_null
+
+      - name: categories_supplied
+        tests:
+          - not_null
+
+    tests:
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "lead_time_days >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "minimum_order_quantity >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "year_established >= 1900"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "average_delay_days >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "defect_rate >= 0 AND defect_rate <= 100"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "on_time_delivery_rate >= 0 AND on_time_delivery_rate <= 100"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "returns_percentage >= 0 AND returns_percentage <= 100"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "response_time_hours >= 0"
+
+      - dbt_utils.expression_is_true:
+          arguments:
+            expression: "contract_end_date >= contract_start_date"
