@@ -1,5 +1,5 @@
 SELECT
-    {{ dbt_utils.generate_surrogate_key(['customer_id']) }} AS customer_key,
+    {{ dbt_utils.generate_surrogate_key(['customer_id','dbt_valid_from']) }} AS customer_key,
     customer_id,
     CONCAT(first_name, ' ', last_name) AS full_name,
     email,

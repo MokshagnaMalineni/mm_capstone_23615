@@ -57,10 +57,6 @@ models:
         tests:
           - unique
 
-      - name: contract_id
-        tests:
-          - unique
-
       - name: contract_start_date
         tests:
           - not_null

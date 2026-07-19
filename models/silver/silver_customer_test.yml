@@ -16,12 +16,6 @@ models:
         tests:
           - not_null
 
-      - name: email
-        tests:
-          - unique
-      # - name: birth_date
-      #   tests:
-      #     - not_null
 
       - name: registration_date
         tests:

@@ -68,3 +68,12 @@ models:
       - name: zip_code
         tests:
           - not_null
+      - name: store_size_category
+        tests:
+           - not_null
+           - accepted_values:
+                arguments:
+                  values:
+                    - SMALL
+                    - MEDIUM
+                    - LARGE

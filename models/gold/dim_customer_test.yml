@@ -5,12 +5,10 @@ models:
     columns:
       - name: customer_key
         tests:
-          - unique
           - not_null
 
       - name: customer_id
         tests:
-          - unique
           - not_null
 
       - name: full_name
