@@ -71,6 +71,28 @@ models:
         tests:
           - not_null
 
+      - name: campaign_type
+        tests:
+         - accepted_values:
+             arguments:
+              values:
+                  - Brand Awareness
+                  - Clearance
+                  - Discount Event
+                  - Product Launch
+                  - Seasonal Promotion
+      - name: channel
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - Digital Ads
+                  - Email
+                  - In-Store
+                  - Multiple (Email, Social Media, In-Store)
+                  - Print Media
+                  - Social Media
+
 
     tests:
 
