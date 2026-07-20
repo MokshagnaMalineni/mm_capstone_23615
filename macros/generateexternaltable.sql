@@ -24,7 +24,6 @@
     {{ log("Creating " ~ table_name, info=True) }}
     {{ run_query(sql) }}
 {% endfor %}
-
 {% endmacro %}
 
 

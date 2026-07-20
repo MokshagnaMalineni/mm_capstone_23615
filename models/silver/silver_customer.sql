@@ -33,81 +33,58 @@ cleaned_data AS (
 
     SELECT
         TRIM(customer_id) AS customer_id,
-
         INITCAP(TRIM(first_name)) AS first_name,
         INITCAP(TRIM(last_name)) AS last_name,
-
         LOWER(TRIM(email)) AS email,
-
         REGEXP_REPLACE(
-            REGEXP_REPLACE(
-                UPPER(TRIM(phone)),
-                '^\\+1\\s*',
-                ''
-            ),
-            '[(). -]',
-            ''
-        ) AS phone,
-
+            REGEXP_REPLACE(UPPER(TRIM(phone)),'^\\+1\\s*',''),'[(). -]','') AS phone,
         COALESCE(
             TRY_TO_DATE(birth_date,'YYYY-MM-DD'),
             TRY_TO_DATE(birth_date,'MM/DD/YYYY'),
             TRY_TO_DATE(birth_date,'DD-MM-YYYY')
         ) AS birth_date,
-
         COALESCE(
             TRY_TO_DATE(registration_date,'YYYY-MM-DD'),
             TRY_TO_DATE(registration_date,'MM/DD/YYYY'),
             TRY_TO_DATE(registration_date,'DD-MM-YYYY')
         ) AS registration_date,
-
         COALESCE(
             TRY_TO_DATE(last_modified_date,'YYYY-MM-DD'),
             TRY_TO_DATE(last_modified_date,'MM/DD/YYYY'),
             TRY_TO_DATE(last_modified_date,'DD-MM-YYYY')
         ) AS last_modified_date,
-
         COALESCE(
             TRY_TO_DATE(last_purchase_date,'YYYY-MM-DD'),
             TRY_TO_DATE(last_purchase_date,'MM/DD/YYYY'),
             TRY_TO_DATE(last_purchase_date,'DD-MM-YYYY')
         ) AS last_purchase_date,
-
         UPPER(TRIM(income_bracket)) AS income_bracket,
         UPPER(TRIM(loyalty_tier)) AS loyalty_tier,
         INITCAP(TRIM(occupation)) AS occupation,
         INITCAP(TRIM(preferred_communication)) AS preferred_communication,
         INITCAP(TRIM(preferred_payment_method)) AS preferred_payment_method,
-
         COALESCE(marketing_opt_in,FALSE) AS marketing_opt_in,
         COALESCE(total_purchases,0) AS total_purchases,
         COALESCE(total_spend,0) AS total_spend,
-
         INITCAP(TRIM(street)) AS street,
         INITCAP(TRIM(city)) AS city,
         UPPER(TRIM(state)) AS state,
         UPPER(TRIM(country)) AS country,
         TRIM(zip_code) AS zip_code,
-
         _source_file,
         _loaded_at,
         _batch_id
-
     FROM customer_flattened
 ),
-
 enriched_data AS (
-
     SELECT
         *,
         CONCAT(first_name,' ',last_name) AS full_name,
-
         DATEDIFF(
             YEAR,
             birth_date,
             CURRENT_DATE()
         ) AS customer_age,
-
         CASE
             WHEN DATEDIFF(YEAR,birth_date,CURRENT_DATE()) BETWEEN 18 AND 35
                 THEN 'Young'
@@ -117,7 +94,6 @@ enriched_data AS (
                 THEN 'Senior'
             ELSE 'Unknown'
         END AS customer_segment,
-
         CONCAT_WS(
             ', ',
             street,
@@ -126,10 +102,8 @@ enriched_data AS (
             country,
             zip_code
         ) AS full_address
-
     FROM cleaned_data
 ),
-
 latest_customer AS (
 
     SELECT *
@@ -142,7 +116,6 @@ latest_customer AS (
             _source_file DESC
     ) = 1
 )
-
 SELECT *
 FROM latest_customer
 WHERE customer_id IS NOT NULL

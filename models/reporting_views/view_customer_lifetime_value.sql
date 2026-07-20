@@ -2,7 +2,6 @@
     materialized='view',
     schema='REPORT_VIEWS'
 ) }}
-
 SELECT
     c.customer_id,
     c.full_name,

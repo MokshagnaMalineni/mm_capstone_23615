@@ -8,6 +8,5 @@ FROM {{ source('bronze','EX_CAMPAIGN') }}
 {% if is_incremental() %}
 WHERE METADATA$FILENAME NOT IN (
     SELECT DISTINCT _source_file
-    FROM {{ this }}
-)
+    FROM {{ this }})
 {% endif %}

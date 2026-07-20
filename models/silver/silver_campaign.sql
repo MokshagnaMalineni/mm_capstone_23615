@@ -55,7 +55,6 @@ sorted_campaign AS (
         _batch_id
     FROM campaign_flattened
 )
-
 SELECT *
 FROM sorted_campaign
 QUALIFY ROW_NUMBER() OVER (PARTITION BY campaign_id ORDER BY last_modified_date DESC) = 1
