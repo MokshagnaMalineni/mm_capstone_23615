@@ -110,13 +110,13 @@ models:
 
       - name: store_size_category
         tests:
-          - not_null
-          - accepted_values:
-              arguments:
-                values:
-                  - Small
-                  - Medium
-                  - Large
+           - not_null
+           - accepted_values:
+                arguments:
+                  values:
+                    - SMALL
+                    - MEDIUM
+                    - LARGE
 
       - name: sales_target_achievement_percentage
         tests:

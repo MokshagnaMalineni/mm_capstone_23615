@@ -2,7 +2,6 @@
     materialized='view',
     schema='REPORT_VIEWS'
 ) }}
-
 SELECT
     e.role,
     COUNT(DISTINCT e.employee_id) AS total_employees,

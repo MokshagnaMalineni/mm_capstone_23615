@@ -19,5 +19,4 @@ SELECT
     opening_date,
     store_size_category,
     is_active
-
 FROM {{ ref('silver_stores') }}
