@@ -48,9 +48,9 @@ models:
     staging:
       +materialized: view
     silver:
-      +schema: "{{ 'SILVER_PROD_23618' if target.name == 'prod' else 'SILVER_23618' }}"
+      +schema: "{{ 'SILVER_PROD_23615' if target.name == 'prod' else 'SILVER_23615' }}"
       +materialized: table
     gold:
-      +schema: "{{ 'GOLD_PROD_23618' if target.name == 'prod' else 'GOLD_23618' }}"
+      +schema: "{{ 'GOLD_PROD_23615' if target.name == 'prod' else 'GOLD_23615' }}"
       +materialized: table
 
